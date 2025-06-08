@@ -3,6 +3,11 @@ package com.example.userbankingservice.controller;
 import com.example.userbankingservice.entity.User;
 import com.example.userbankingservice.service.UserService;
 import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +25,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "API для аутентификации пользователей через email или телефон")
 public class AuthController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -28,8 +34,16 @@ public class AuthController {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    @Operation(summary = "Аутентификация пользователя", description = "Выполняет вход пользователя по email или телефону с проверкой пароля и возвращает JWT токен")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная аутентификация, возвращен JWT токен"),
+            @ApiResponse(responseCode = "400", description = "Некорректные учетные данные или отсутствуют email/телефон"),
+            @ApiResponse(responseCode = "401", description = "Неверный пароль")
+    })
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    public String login(
+            @Parameter(description = "Данные для входа (email или телефон и пароль)", required = true)
+            @RequestBody LoginRequest request) {
         // Поиск пользователя по email или phone
         User user = null;
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
@@ -63,8 +77,13 @@ public class AuthController {
 
     @Data
     public static class LoginRequest {
+        @Parameter(description = "Email пользователя для входа", example = "user@example.com")
         private String email;
+
+        @Parameter(description = "Телефон пользователя для входа", example = "+1234567890")
         private String phone;
+
+        @Parameter(description = "Пароль пользователя", example = "password123", required = true)
         private String password;
     }
 }
