@@ -2,11 +2,14 @@ package com.example.userbankingservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "account")
 @Data
+@ToString(exclude = "user")
 public class Account {
     @Id
     private Long id;

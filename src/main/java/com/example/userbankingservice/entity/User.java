@@ -2,12 +2,15 @@ package com.example.userbankingservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "\"user\"")
 @Data
+@ToString(exclude = "account")
 public class User {
     @Id
     private Long id;

@@ -145,6 +145,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "accounts", allEntries = true)
     @Transactional
     public void transferMoney(Long fromUserId, Long toUserId, BigDecimal amount) {
         logger.info("Перевод денег от пользователя ID: {} к пользователю ID: {}, сумма: {}", fromUserId, toUserId, amount);
@@ -153,6 +154,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Сумма должна быть положительной");
         }
         Account fromAccount = accountRepository.findByUserIdForUpdate(fromUserId);
+        logger.info("Пользователь найден: {}", fromAccount);
         Account toAccount = accountRepository.findByUserIdForUpdate(toUserId);
         if (fromAccount == null || toAccount == null) {
             logger.error("Счет отправителя или получателя не найден");
@@ -161,6 +163,10 @@ public class UserServiceImpl implements UserService {
         if (fromAccount.getBalance().compareTo(amount) < 0) {
             logger.error("Недостаточно средств на счете пользователя ID: {}", fromUserId);
             throw new RuntimeException("Недостаточно средств");
+        }
+        if (fromUserId.equals(toUserId)) {
+            logger.error("Перевод самому себе запрещен: {}", fromUserId);
+            throw new RuntimeException("Перевод самому себе запрещен");
         }
         fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         toAccount.setBalance(toAccount.getBalance().add(amount));

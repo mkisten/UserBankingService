@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -101,6 +103,7 @@ public class UserController {
     public void transferMoney(
             @Parameter(description = "ID авторизованного пользователя (отправителя)", required = true, example = "1") @AuthenticationPrincipal Long fromUserId,
             @Parameter(description = "Запрос на перевод", required = true) @RequestBody TransferRequest request) {
+        log.info("Переовод от пользователя: {}", fromUserId);
         userService.transferMoney(fromUserId, request.getToUserId(), request.getAmount());
     }
 

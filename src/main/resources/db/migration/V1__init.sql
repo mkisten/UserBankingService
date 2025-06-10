@@ -29,8 +29,8 @@ CREATE TABLE phone_data (
 
 -- Вставка начальных данных
 INSERT INTO "user" (id, name, date_of_birth, password) VALUES
-                                                           (1, 'Иван Иванов', '1993-05-01', 'password123'),
-                                                           (2, 'Мария Смирнова', '1988-10-15', 'password456');
+                                                           (1, 'Иван Иванов', '1993-05-01', '$2a$10$d9NlFCwNy9EkACLhuY5dRuwuSFcADmt7p9CSUeRaSYhc4wt9tGE4y'),
+                                                           (2, 'Мария Смирнова', '1988-10-15', '$2a$10$80rWdkJH/xZAd0.UvHEMxeGodxJLF684Ms6F0FzVWLitpqTEX5Su6');
 
 INSERT INTO account (id, user_id, balance, initial_balance) VALUES
                                                                 (1, 1, 1000.00, 1000.00),
